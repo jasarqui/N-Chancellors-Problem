@@ -112,8 +112,7 @@ char* concatenate(int x, int y) {
     return string;
 }
 
-// returns a candidate structure
-// with num of candidates and the candidates themselves
+// returns a the list of candidates
 char* generate_candidates() {
     
 }
@@ -145,7 +144,7 @@ int main() {
         for (j = 0; j < boardsize + 2; j++) {
             if (i < boardsize && j < boardsize) board[i][j] = 0;
             option[i][j] = 0;
-        }https://www.google.com/
+        }
         if (i < boardsize) {
             unavailable_row[i] = 0;
             unavailable_col[i] = 0;

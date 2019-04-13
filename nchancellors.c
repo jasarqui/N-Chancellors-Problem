@@ -13,10 +13,11 @@
 
 // define globals
 // this is to minimize the parameters passed
-int boardsize, num_possible_moves;
+int boardsize, num_possible_moves, num_candidates, move;
 int* unavailable_col;
 int* unavailable_row;
 int** board;
+int*** options;
 
 // prints the board
 void print_board() {
@@ -113,8 +114,21 @@ char* concatenate(int x, int y) {
 }
 
 // returns a the list of candidates
-char* generate_candidates() {
-    
+void generate_candidates() {
+    int i, j;
+    num_candidates = 0;
+
+    for (i = 0; i < boardsize; i++) {
+        if (unavailable_row[i] == UNAVAILABLE) continue;
+        for (j = 0; j < boardsize; j++) {
+            if (unavailable_col[j] == UNAVAILABLE) continue;
+            if (board[i][j] == AVAILABLE) {
+                options[move][num_candidates][0] = i;
+                options[move][num_candidates][1] = j;
+                num_candidates++;
+            }
+        }
+    }
 }
 
 int main() {
@@ -128,23 +142,33 @@ int main() {
     num_possible_moves = (int) pow((double) boardsize, (double) 2);
 
     // generate arrays
-    char option[boardsize + 2][boardsize + 2];
     int nopts[boardsize + 2];
-
     int i, j;
+    // board
     board = (int **) malloc(boardsize * sizeof(int*));
     for (i = 0; i < boardsize; i++) {
         board[i] = (int *) malloc(sizeof(int) * boardsize);
     }
+    // candidate matrix
+    options = (int ***) malloc((boardsize + 2) * sizeof(int**));
+    for (i = 0; i < boardsize + 2; i++) {
+        options[i] = (int **) malloc(sizeof(int*) * (num_possible_moves + 2));
+        for (j = 0; j < num_possible_moves + 2; j++) {
+            options[i][j] = (int *) malloc(sizeof(int) * 2);
+        }
+    }
+    // utility arrays
     unavailable_col = (int *) malloc(sizeof(int) * boardsize);
     unavailable_row = (int *) malloc(sizeof(int) * boardsize);
 
     // initialize arrays to 0
     for (i = 0; i < boardsize + 2; i++) {
-        for (j = 0; j < boardsize + 2; j++) {
+        for (j = 0; j < num_possible_moves + 2; j++) {
             if (i < boardsize && j < boardsize) board[i][j] = 0;
-            option[i][j] = 0;
+            options[i][j][0] = 0;
+            options[i][j][1] = 0;
         }
+
         if (i < boardsize) {
             unavailable_row[i] = 0;
             unavailable_col[i] = 0;
@@ -154,11 +178,13 @@ int main() {
 
     add_chancellor(4, 5);
     add_chancellor(5, 6);
-    add_chancellor(6, 7);
-    remove_chancellor(5, 6);
-    remove_chancellor(6, 7);
     print_board();
+    generate_candidates();
     printf("%d\n", num_possible_moves);
+    printf("%d\n", num_candidates);
+    for (i = 0; i < num_candidates; i++) {
+        printf("(%d,%d) ", options[move][i][0], options[move][i][1]);
+    }
 
     // deallocate arrays
     for (i = 0; i < boardsize; i++) {

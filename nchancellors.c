@@ -59,13 +59,13 @@ void add_chancellor(int x, int y) {
     board[x][y]--; // remove extra
 
     // block off knight moves
-    if (y - 2 > 0 && x - 1 > 0) knight_move(ADD, x, y, -1, -2);
-    if (y - 2 > 0 && x + 1 < boardsize) knight_move(ADD, x, y, 1, -2);
-    if (y + 2 < boardsize && x - 1 > 0) knight_move(ADD, x, y, -1, 2);
+    if (y - 2 >= 0 && x - 1 >= 0) knight_move(ADD, x, y, -1, -2);
+    if (y - 2 >= 0 && x + 1 < boardsize) knight_move(ADD, x, y, 1, -2);
+    if (y + 2 < boardsize && x - 1 >= 0) knight_move(ADD, x, y, -1, 2);
     if (y + 2 < boardsize && x + 1 < boardsize) knight_move(ADD, x, y, 1, 2);
-    if (x - 2 > 0 && y - 1 > 0) knight_move(ADD, x, y, -2, -1);
-    if (x - 2 > 0 && y + 1 < boardsize) knight_move(ADD, x, y, -2, 1);
-    if (x + 2 < boardsize && y - 1 > 0) knight_move(ADD, x, y, 2, -1);
+    if (x - 2 >= 0 && y - 1 >= 0) knight_move(ADD, x, y, -2, -1);
+    if (x - 2 >= 0 && y + 1 < boardsize) knight_move(ADD, x, y, -2, 1);
+    if (x + 2 < boardsize && y - 1 >= 0) knight_move(ADD, x, y, 2, -1);
     if (x + 2 < boardsize && y + 1 < boardsize) knight_move(ADD, x, y, 2, 1);
 }
 
@@ -85,13 +85,13 @@ void remove_chancellor(int x, int y) {
     board[x][y]++; // remove extra
 
     // free off knight moves
-    if (y - 2 > 0 && x - 1 > 0) knight_move(REMOVE, x, y, -1, -2);
-    if (y - 2 > 0 && x + 1 < boardsize) knight_move(REMOVE, x, y, 1, -2);
-    if (y + 2 < boardsize && x - 1 > 0) knight_move(REMOVE, x, y, -1, 2);
+    if (y - 2 >= 0 && x - 1 >= 0) knight_move(REMOVE, x, y, -1, -2);
+    if (y - 2 >= 0 && x + 1 < boardsize) knight_move(REMOVE, x, y, 1, -2);
+    if (y + 2 < boardsize && x - 1 >= 0) knight_move(REMOVE, x, y, -1, 2);
     if (y + 2 < boardsize && x + 1 < boardsize) knight_move(REMOVE, x, y, 1, 2);
-    if (x - 2 > 0 && y - 1 > 0) knight_move(REMOVE, x, y, -2, -1);
-    if (x - 2 > 0 && y + 1 < boardsize) knight_move(REMOVE, x, y, -2, 1);
-    if (x + 2 < boardsize && y - 1 > 0) knight_move(REMOVE, x, y, 2, -1);
+    if (x - 2 >= 0 && y - 1 >= 0) knight_move(REMOVE, x, y, -2, -1);
+    if (x - 2 >= 0 && y + 1 < boardsize) knight_move(REMOVE, x, y, -2, 1);
+    if (x + 2 < boardsize && y - 1 >= 0) knight_move(REMOVE, x, y, 2, -1);
     if (x + 2 < boardsize && y + 1 < boardsize) knight_move(REMOVE, x, y, 2, 1);
 }
 
@@ -186,7 +186,7 @@ int main() {
         if (nopts[move] > 0) {
             move++;
 
-            if (move == boardsize + 1) {
+            if (move == boardsize + 1 && num_candidates == 1) {
                 add_chancellor(options[move-1][nopts[move-1]][0], options[move-1][nopts[move-1]][1]);
                 // solution found
                 printf("Solution Found: \n");
@@ -214,6 +214,7 @@ int main() {
         } else { // pop
             move--;
             // printf("REMOVE\n");
+            // check first if there was a move before removing
             remove_chancellor(options[move][nopts[move]][0], options[move][nopts[move]][1]);
             // print_board();
             nopts[move]--;

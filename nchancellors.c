@@ -10,6 +10,7 @@
 #define UNAVAILABLE 1
 #define ADD 0
 #define REMOVE 1
+#define START 0
 
 // define globals
 // this is to minimize the parameters passed
@@ -118,13 +119,13 @@ void generate_candidates() {
     int i, j;
     num_candidates = 0;
 
-    for (i = 0; i < boardsize; i++) {
+    for (i = boardsize - 1; i >= 0; i--) {
         if (unavailable_row[i] == UNAVAILABLE) continue;
-        for (j = 0; j < boardsize; j++) {
+        for (j = boardsize - 1; j >= 0; j--) {
             if (unavailable_col[j] == UNAVAILABLE) continue;
             if (board[i][j] == AVAILABLE) {
-                options[move][num_candidates][0] = i;
-                options[move][num_candidates][1] = j;
+                options[move][num_candidates+1][0] = i;
+                options[move][num_candidates+1][1] = j;
                 num_candidates++;
             }
         }
@@ -176,14 +177,47 @@ int main() {
         nopts[i] = 0;
     }
 
-    add_chancellor(4, 5);
-    add_chancellor(5, 6);
-    print_board();
-    generate_candidates();
-    printf("%d\n", num_possible_moves);
-    printf("%d\n", num_candidates);
-    for (i = 0; i < num_candidates; i++) {
-        printf("(%d,%d) ", options[move][i][0], options[move][i][1]);
+    // backtrack utilities
+    move = 0;
+    nopts[START] = 1;
+
+    // backtracking
+    while (nopts[START] > 0) {
+        if (nopts[move] > 0) {
+            move++;
+
+            if (move == boardsize + 1) {
+                add_chancellor(options[move-1][nopts[move-1]][0], options[move-1][nopts[move-1]][1]);
+                // solution found
+                printf("Solution Found: \n");
+                for (i = 1; i <= boardsize; i++) {
+                    printf("(%d, %d) ", options[i][nopts[i]][0], options[i][nopts[i]][1]);
+                }
+                printf("\n");
+            } else if (move == 1) {
+                generate_candidates();
+                nopts[move] = num_candidates;
+            } else {
+                // push
+                // add the chancellor from previous move to the board
+                add_chancellor(options[move-1][nopts[move-1]][0], options[move-1][nopts[move-1]][1]);
+                // printf("ADD\n");
+                // print_board();
+                generate_candidates();
+                // for (i = 1; i <= num_candidates; i++) {
+                //     printf("(%d, %d) ", options[move][i][0], options[move][i][1]);
+                // }
+                // printf("\n");
+                nopts[move] = num_candidates;    
+            }
+
+        } else { // pop
+            move--;
+            // printf("REMOVE\n");
+            remove_chancellor(options[move][nopts[move]][0], options[move][nopts[move]][1]);
+            // print_board();
+            nopts[move]--;
+        }
     }
 
     // deallocate arrays

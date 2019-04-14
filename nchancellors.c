@@ -11,14 +11,18 @@
 #define ADD 0
 #define REMOVE 1
 #define START 0
+#define NO_SOLUTION 0
+#define SOLUTION_FOUND 1
 
 // define globals
 // this is to minimize the parameters passed
-int boardsize, num_possible_moves, num_candidates, move;
+int boardsize, num_possible_moves, num_candidates, move, num_of_solutions;
 int* unavailable_col;
 int* unavailable_row;
 int** board;
 int*** options;
+char* solution_string;
+char* solutions;
 
 // prints the board
 void print_board() {
@@ -161,6 +165,8 @@ int main() {
     // utility arrays
     unavailable_col = (int *) malloc(sizeof(int) * boardsize);
     unavailable_row = (int *) malloc(sizeof(int) * boardsize);
+    solutions = malloc (1);
+    solutions[0] = '\0';
 
     // initialize arrays to 0
     for (i = 0; i < boardsize + 2; i++) {
@@ -187,40 +193,85 @@ int main() {
             move++;
 
             if (move == boardsize + 1 && num_candidates == 1) {
+                // add the last move first
                 add_chancellor(options[move-1][nopts[move-1]][0], options[move-1][nopts[move-1]][1]);
-                // solution found
-                printf("Solution Found: \n");
-                for (i = 1; i <= boardsize; i++) {
-                    printf("(%d, %d) ", options[i][nopts[i]][0], options[i][nopts[i]][1]);
+
+                // save board state in a string
+                char* board_state;
+                solution_string = malloc(num_possible_moves);
+                solution_string[0] = '\0';
+                for (i = 0; i < boardsize; i++) {
+                    for (j = 0; j < boardsize; j++) {
+                        int length = snprintf(NULL, 0, "%d", board[i][j]);
+                        board_state = malloc(length + 1);
+                        snprintf(board_state, length + 1, "%d", board[i][j]);
+                        strcat(solution_string, board_state);
+                    }
                 }
-                printf("\n");
+                free(board_state);
+
+                int solution_flag = SOLUTION_FOUND;
+                if (solutions[0] != '\0') {
+                    char *solution;
+                    // copy first the solutions before tokenizing
+                    char *solution_copy = malloc (1);
+                    solution_copy[0] = '\0';
+                    strcpy(solution_copy, solutions);
+
+                    solution = strtok(solution_copy, ",");
+                    while (solution != NULL) {
+                        // if there is a similar solution
+                        if (strcmp(solution, solution_string) == 0) {
+                            solution_flag = NO_SOLUTION;
+                            break;
+                        }
+                        // update
+                        solution = strtok (NULL, ",");
+                    }
+
+                    if (solution_flag == SOLUTION_FOUND) {
+                        // unique solution found
+                        printf("Solution Found: \n");
+                        for (i = 1; i <= boardsize; i++) {
+                            printf("(%d, %d) ", options[i][nopts[i]][0], options[i][nopts[i]][1]);
+                        }
+                        printf("\n");
+                        
+                        strcat(solutions, ",");
+                        strcat(solutions, solution_string);
+                        num_of_solutions++;
+                    }
+
+                    free(solution_copy);
+                } else {
+                    strcat(solutions, solution_string);
+                    // unique solution found
+                    printf("Solution Found: \n");
+                    for (i = 1; i <= boardsize; i++) {
+                        printf("(%d, %d) ", options[i][nopts[i]][0], options[i][nopts[i]][1]);
+                    }
+                    printf("\n");
+                    num_of_solutions++;
+                }
+
             } else if (move == 1) {
                 generate_candidates();
                 nopts[move] = num_candidates;
-            } else {
-                // push
+            } else { // push
                 // add the chancellor from previous move to the board
                 add_chancellor(options[move-1][nopts[move-1]][0], options[move-1][nopts[move-1]][1]);
-                // printf("ADD\n");
-                // print_board();
                 generate_candidates();
-                // for (i = 1; i <= num_candidates; i++) {
-                //     printf("(%d, %d) ", options[move][i][0], options[move][i][1]);
-                // }
-                // printf("\n");
                 nopts[move] = num_candidates;    
             }
 
         } else { // pop
             move--;
-            // printf("REMOVE\n");
-            // check first if there was a move before removing
             remove_chancellor(options[move][nopts[move]][0], options[move][nopts[move]][1]);
-            // print_board();
             nopts[move]--;
         }
     }
 
+    printf("\nNumber of Solutions Found: %d\n", num_of_solutions);
     // deallocate arrays
     for (i = 0; i < boardsize; i++) {
         free(board[i]);
@@ -228,5 +279,6 @@ int main() {
     free(board);
     free(unavailable_col);
     free(unavailable_row);
+    free(solutions);
     return 0;
 }

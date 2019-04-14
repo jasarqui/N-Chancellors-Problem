@@ -32,20 +32,12 @@ void generate_candidates() {
             }
         }
 
-        // printf("%d: move-1:%d move-2:%d\n", i, options[move-1][nopts[move-1]], options[move-2][nopts[move-2]]);
         if (flag == UNAVAILABLE) continue;
         // check knight moves
         // check previous move
-        else if (options[move-1][nopts[move-1]] == i - 2 || options[move-1][nopts[move-1]] == i + 2) {
-            // printf("EQUALS PREVMOVE");
-            continue;
-        }
+        else if (options[move-1][nopts[move-1]] == i - 2 || options[move-1][nopts[move-1]] == i + 2) continue;
         // check 2 moves before
-        else if (move > 2 && (options[move-2][nopts[move-2]] == i - 1 || options[move-2][nopts[move-2]] == i + 1)) {
-            // printf("EQUALS PREVPREVMOVE");
-            continue;
-        }
-        // check if exists as top of stack
+        else if (move > 2 && (options[move-2][nopts[move-2]] == i - 1 || options[move-2][nopts[move-2]] == i + 1)) continue;
         // add as candidate
         else {
             options[move][num_candidates+1] = i;
@@ -54,8 +46,7 @@ void generate_candidates() {
     }
 }
 
-// returns quarter of the candidates
-// theory: quarter of the candidates are just same candidates with diff positions
+// returns all possible start
 void starting_candidates() {
     num_candidates = 0;
 
@@ -96,18 +87,10 @@ int main() {
         if (nopts[move] > 0) {
             move++;
 
-            // for(i = 1; i <= boardsize; i++) {
-            //     for (j = 1; j <= boardsize; j++) {
-            //         printf("%d ", options[i][j]);
-            //     }
-            //     printf("\n");
-            // }
-            // printf("\n");
-
             if (move == boardsize + 1) {
                 printf("Solution Found: \n");
                 for (i = 1; i <= boardsize; i++) {
-                    printf("(%d, %d) ", options[i][nopts[i]] - 1, i);
+                    printf("(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
                 }
                 printf("\n");
                 num_of_solutions++;                    

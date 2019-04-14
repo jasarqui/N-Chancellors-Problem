@@ -58,6 +58,7 @@ void starting_candidates() {
 }
 
 int main() {
+    // ----- replace from here for file reading -----
     // get the array size
     while (TRUE) {
         printf("Enter board size (must be >1): ");
@@ -76,6 +77,7 @@ int main() {
         }
         nopts[i] = 0;
     }
+    // ----- up to here ----- 
 
     // backtrack utilities
     int num_of_solutions = 0;
@@ -114,6 +116,7 @@ int main() {
         free(options[i]);
     }
     free(options);
+    free(nopts);
 
     return 0;
 }

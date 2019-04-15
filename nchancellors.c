@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 // define boolean
 #define FALSE 0
 #define TRUE 1
@@ -14,6 +15,8 @@
 int boardsize, num_candidates, move, num_boards;
 int* nopts, *rows_with_chancellor;
 int** options;
+clock_t start, end;
+double cpu_time_used;
 
 // returns the list of candidates
 void generate_candidates() {
@@ -116,6 +119,7 @@ int main() {
         nopts[START] = 1;
 
         // backtracking
+        start = clock();
         while (nopts[START] > 0) {
             if (nopts[move] > 0) {
                 move++;
@@ -140,8 +144,10 @@ int main() {
                 nopts[move]--;
             }
         }
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
-        printf("Number of Solutions Found: %d\n", num_of_solutions);
+        printf(">> %d solutions found in %f seconds.\n", num_of_solutions, cpu_time_used);
         // deallocate arrays
         for (i = 0; i < boardsize + 2; i++) {
             free(options[i]);

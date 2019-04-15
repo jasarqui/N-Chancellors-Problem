@@ -1,19 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // define boolean
 #define FALSE 0
 #define TRUE 1
 // define constants
 #define START 0
-#define Y 0
-#define X 1
 #define AVAILABLE 0
 #define UNAVAILABLE 1
 
 // define globals
 // this is to minimize the parameters passed
-int boardsize, num_candidates, move;
-int* nopts;
+int boardsize, num_candidates, move, num_boards;
+int* nopts, *rows_with_chancellor;
 int** options;
 
 // returns the list of candidates
@@ -58,65 +57,98 @@ void starting_candidates() {
 }
 
 int main() {
-    // ----- replace from here for file reading -----
-    // get the array size
-    while (TRUE) {
-        printf("Enter board size (must be >1): ");
-        scanf("%d", &boardsize);
-        if (boardsize > 1) break;
-    }
+    // read file
+    FILE* fp;
+    char buffer[255];
 
-    // generate arrays
-    int i, j;
-    nopts = (int *) malloc(sizeof(int) * (boardsize + 2));
-    options = (int **) malloc(sizeof(int*) * (boardsize + 2));
-    for (i = 0; i < boardsize + 2; i++) {
-        options[i] = (int *) malloc(sizeof(int) * (boardsize + 2));
-        for (j = 0; j < boardsize + 2; j++) {
-            options[i][j] = 0;
-        }
-        nopts[i] = 0;
-    }
-    // ----- up to here ----- 
+    fp = fopen("board.in", "r");
+    // get the number of boards
+    fgets(buffer, 255, fp);
+    num_boards = atoi(buffer);
 
-    // backtrack utilities
-    int num_of_solutions = 0;
-    move = 0;
-    nopts[START] = 1;
+    int i, j, n;
+    // get the board
+    for (n = 0; n < num_boards; n++) {
+        fgets(buffer, 255, fp);
+        boardsize = atoi(buffer);
 
-    // backtracking
-    while (nopts[START] > 0) {
-        if (nopts[move] > 0) {
-            move++;
-
-            if (move == boardsize + 1) {
-                printf("Solution Found: \n");
-                for (i = 1; i <= boardsize; i++) {
-                    printf("(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
-                }
-                printf("\n");
-                num_of_solutions++;                    
-            } else if (move == 1) {
-                starting_candidates();
-                nopts[move] = num_candidates;
-            } else { // push
-                generate_candidates();
-                nopts[move] = num_candidates;    
+        // initialize arrays
+        nopts = (int *) malloc(sizeof(int) * (boardsize + 2));
+        rows_with_chancellor = (int *) malloc(sizeof(int) * (boardsize + 2));
+        options = (int **) malloc(sizeof(int*) * (boardsize + 2));
+        for (i = 0; i < boardsize + 2; i++) {
+            options[i] = (int *) malloc(sizeof(int) * (boardsize + 2));
+            for (j = 0; j < boardsize + 2; j++) {
+                options[i][j] = 0;
             }
-
-        } else { // pop
-            move--;
-            nopts[move]--;
+            nopts[i] = 0;
         }
-    }
 
-    printf("\nNumber of Solutions Found: %d\n", num_of_solutions);
-    // deallocate arrays
-    for (i = 0; i < boardsize + 2; i++) {
-        free(options[i]);
+        // get the board initialization
+        for (i = 1; i <= boardsize; i++) {
+            fgets(buffer, 255, fp);
+
+            char *rest = NULL;
+            char *token;
+
+            int col = 1;
+            // splits a row/line by spaces, then assigns them to the board
+            // ref: https://stackoverflow.com/questions/15961253/c-correct-usage-of-strtok-r
+            for (token = strtok_r(buffer, " ", &rest); token != NULL; token = strtok_r(NULL, " ", &rest)) {
+                options[i][col] = atoi(token);
+
+                // check for edited rows
+                if (atoi(token) != 0) rows_with_chancellor[i] = TRUE;
+                col++;
+            }
+        }
+
+        // backtrack the current board
+        printf("Boardsize: %d\n", boardsize);
+        // for (i = 1; i <= boardsize; i++) {
+        //     printf("%d ", rows_with_chancellor[i]);
+        // }
+        // printf("\n");
+
+        // backtrack utilities
+        int num_of_solutions = 0;
+        move = 0;
+        nopts[START] = 1;
+
+        // backtracking
+        while (nopts[START] > 0) {
+            if (nopts[move] > 0) {
+                move++;
+
+                if (move == boardsize + 1) {
+                    // printf("Solution Found: \n");
+                    // for (i = 1; i <= boardsize; i++) {
+                    //     printf("(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
+                    // }
+                    // printf("\n");
+                    num_of_solutions++;                    
+                } else if (move == 1) {
+                    starting_candidates();
+                    nopts[move] = num_candidates;
+                } else { // push
+                    generate_candidates();
+                    nopts[move] = num_candidates;    
+                }
+
+            } else { // pop
+                move--;
+                nopts[move]--;
+            }
+        }
+
+        printf("Number of Solutions Found: %d\n", num_of_solutions);
+        // deallocate arrays
+        for (i = 0; i < boardsize + 2; i++) {
+            free(options[i]);
+        }
+        free(options);
+        free(nopts);
     }
-    free(options);
-    free(nopts);
 
     return 0;
 }

@@ -23,7 +23,7 @@ void generate_candidates() {
 
     // check first if row already has existing move
     if (rows_with_chancellor[move] == 1) {
-        // check if valid
+        // check if move is valid
         int flag = AVAILABLE;
 
         // check rook moves
@@ -43,11 +43,12 @@ void generate_candidates() {
         else if (move > 2 && (options[move-2][nopts[move-2]] == chancellor_position[move] - 1 || 
             options[move-2][nopts[move-2]] == chancellor_position[move] + 1)) flag = UNAVAILABLE;
 
+        // move is valid
         if (flag == AVAILABLE) {
-            // printf("%d: %d\n", num_candidates+1, chancellor_position[i]);
             options[move][num_candidates+1] = chancellor_position[move];
             num_candidates++;
         }
+    // there are no moves in the row
     } else if (rows_with_chancellor[move] == 0) {
         for (i = boardsize; i > 0; i--) {
             // check rook moves
@@ -157,12 +158,14 @@ int main() {
             if (nopts[move] > 0) {
                 move++;
 
-                if (move == boardsize + 1) {
+                if (move == boardsize + 1) { // solution found
+                    // ===== add file writing here ======                                
                     // printf("Solution Found: \n");
                     // for (i = 1; i <= boardsize; i++) {
                     //     printf("(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
                     // }
                     // printf("\n");
+                    // ===== end of file writing =====
                     num_of_solutions++;         
                 } else { // push
                     generate_candidates();
@@ -177,6 +180,7 @@ int main() {
         end = clock();
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 
+        // print formatting for number of solutions found
         if (num_of_solutions == 1) {
             printf(">> %d solution found in %f seconds.\n", num_of_solutions, cpu_time_used);
         } else if (num_of_solutions == 0) {
@@ -184,6 +188,7 @@ int main() {
         } else {
             printf(">> %d solutions found in %f seconds.\n", num_of_solutions, cpu_time_used);
         }
+
         // deallocate arrays
         for (i = 0; i < boardsize + 2; i++) {
             free(options[i]);

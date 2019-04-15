@@ -82,7 +82,7 @@ void generate_candidates() {
 
 int main() {
     // read file
-    FILE* fp;
+    FILE* fp, *fout;
     char buffer[255];
     fp = fopen("board.in", "r");
 
@@ -94,6 +94,9 @@ int main() {
     int i, j, n, invalid_board;
     clock_t start, end;
     double cpu_time_used;
+
+    // clear file contents first for reset
+    fclose(fopen("solutions.out", "w"));
 
     // get the boards
     for (n = 0; n < num_boards; n++) {
@@ -138,17 +141,17 @@ int main() {
             }
         }
 
-        // backtrack the current board
-        printf("Board Size: %d\n", boardsize);
-
         // backtrack utilities
         int num_of_solutions = 0;
         move = 0;
         nopts[START] = 1;
 
+        // open file for appending
+        fout = fopen("solutions.out", "a");
+        fprintf(fout, "Board %d with size %dx%d\n", n+1, boardsize, boardsize);
         if (invalid_board == TRUE) {
             // more than one chancellors in one row
-            printf(">> No solution found.\n");
+            fprintf(fout, ">> No solution found.\n");
             continue;
         }
 
@@ -159,13 +162,10 @@ int main() {
                 move++;
 
                 if (move == boardsize + 1) { // solution found
-                    // ===== add file writing here ======                                
-                    // printf("Solution Found: \n");
-                    // for (i = 1; i <= boardsize; i++) {
-                    //     printf("(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
-                    // }
-                    // printf("\n");
-                    // ===== end of file writing =====
+                    for (i = 1; i <= boardsize; i++) {
+                        fprintf(fout, "(%d, %d) ", options[i][nopts[i]] - 1, i - 1);
+                    }
+                    fprintf(fout, "\n");
                     num_of_solutions++;         
                 } else { // push
                     generate_candidates();
@@ -182,11 +182,11 @@ int main() {
 
         // print formatting for number of solutions found
         if (num_of_solutions == 1) {
-            printf(">> %d solution found in %f seconds.\n", num_of_solutions, cpu_time_used);
+            fprintf(fout, ">> %d solution found in %f seconds.\n\n", num_of_solutions, cpu_time_used);
         } else if (num_of_solutions == 0) {
-            printf(">> No solution found in %f seconds.\n", cpu_time_used);
+            fprintf(fout, ">> No solution found in %f seconds.\n\n", cpu_time_used);
         } else {
-            printf(">> %d solutions found in %f seconds.\n", num_of_solutions, cpu_time_used);
+            fprintf(fout, ">> %d solutions found in %f seconds.\n\n", num_of_solutions, cpu_time_used);
         }
 
         // deallocate arrays
@@ -195,7 +195,9 @@ int main() {
         }
         free(options);
         free(nopts);
+        fclose(fout);
     }
 
+    printf("File generated at 'solutions.out'.\n");
     return 0;
 }

@@ -1,8 +1,11 @@
 # N-Chancellors-Problem
 A variety of the N-Queens' Problem as a requirement for CMSC 142.
 
-To run the project, do the following commands:
-```
-$ gcc nchancellors.c
-$ ./a.out
-```
+### Milestone 1
+Uses Backtracking to find the solutions with an empty board.
+
+### Milestone 2
+Uses Backtracking to find the solutions with an initial board.
+
+### Milestone 3
+Create a playable UI for the Backtracking code.

@@ -1,6 +1,18 @@
+/***
+N-Chancellor's Problem
+CMSC 142 C-3L
+
+Authors:
+Arquilita, Jasper Ian
+Evangelista, Erlen Mae
+Faustino, Jianred
+
+Milestone 1:
+Backtracking with Empty Board
+***/
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 // define boolean
 #define FALSE 0
@@ -20,64 +32,32 @@ int** options;
 void generate_candidates() {
     num_candidates = 0;
     int i, j;
-
-    // check first if row already has existing move
-    if (rows_with_chancellor[move] == 1) {
-        // check if move is valid
-        int flag = AVAILABLE;
-
+    
+    for (i = boardsize; i > 0; i--) {
         // check rook moves
+        int flag = AVAILABLE;
         for (j = 1; j < move; j++) {
             // check top of stacks
-            if (chancellor_position[move] == options[j][nopts[j]]) {
+            if (i == options[j][nopts[j]]) {
                 flag = UNAVAILABLE;
                 break;
             }
         }
 
+        if (flag == UNAVAILABLE) continue;
         // check knight moves
         // check previous move
-        if (move > 1 && (options[move-1][nopts[move-1]] == chancellor_position[move] - 2 || 
-            options[move-1][nopts[move-1]] == chancellor_position[move] + 2)) flag = UNAVAILABLE;
+        else if (move > 1 && (options[move-1][nopts[move-1]] == i - 2 || 
+            options[move-1][nopts[move-1]] == i + 2)) continue;
         // check 2 moves before
-        else if (move > 2 && (options[move-2][nopts[move-2]] == chancellor_position[move] - 1 || 
-            options[move-2][nopts[move-2]] == chancellor_position[move] + 1)) flag = UNAVAILABLE;
-
-        // move is valid
-        if (flag == AVAILABLE) {
-            options[move][num_candidates+1] = chancellor_position[move];
+        else if (move > 2 && (options[move-2][nopts[move-2]] == i - 1 || 
+            options[move-2][nopts[move-2]] == i + 1)) continue;
+        // add as candidate
+        else {
+            options[move][num_candidates+1] = i;
             num_candidates++;
         }
-    // there are no moves in the row
-    } else if (rows_with_chancellor[move] == 0) {
-        for (i = boardsize; i > 0; i--) {
-            // check rook moves
-            int flag = AVAILABLE;
-            for (j = 1; j < move; j++) {
-                // check top of stacks
-                if (i == options[j][nopts[j]]) {
-                    flag = UNAVAILABLE;
-                    break;
-                }
-            }
-
-            if (flag == UNAVAILABLE) continue;
-            // check knight moves
-            // check previous move
-            else if (move > 1 && (options[move-1][nopts[move-1]] == i - 2 || 
-                options[move-1][nopts[move-1]] == i + 2)) continue;
-            // check 2 moves before
-            else if (move > 2 && (options[move-2][nopts[move-2]] == i - 1 || 
-                options[move-2][nopts[move-2]] == i + 1)) continue;
-            // add as candidate
-            else {
-                options[move][num_candidates+1] = i;
-                num_candidates++;
-            }
-        }
     }
-    // else, there are more than one
-    // hence do nothing
 }
 
 int main() {
@@ -122,23 +102,6 @@ int main() {
         // get the board initialization
         for (i = 1; i <= boardsize; i++) {
             fgets(buffer, 255, fp);
-
-            char *rest = NULL;
-            char *token;
-
-            int col = 1;
-            // check for chancellors already present
-            // ref: https://stackoverflow.com/questions/15961253/c-correct-usage-of-strtok-r
-            for (token = strtok_r(buffer, " ", &rest); token != NULL; token = strtok_r(NULL, " ", &rest)) {
-                // check for edited rows
-                if (atoi(token) != 0) {
-                    chancellor_position[i] = col;
-                    rows_with_chancellor[i]++;
-                    // check row validity
-                    if (rows_with_chancellor[i] > 1) invalid_board = TRUE;
-                }
-                col++;
-            }
         }
 
         // backtrack utilities

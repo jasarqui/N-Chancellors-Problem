@@ -1,0 +1,20 @@
+@import '~antd/dist/antd.css';
+@import 'src/styles/fonts.scss';
+@import 'src/styles/colors.scss';
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $dead-grey;
+  color: $black;
+  font-family: 'Sailec-Regular', sans-serif;
+  font-size: 1rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+

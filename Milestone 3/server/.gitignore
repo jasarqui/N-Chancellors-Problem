@@ -1,0 +1,16 @@
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+# Optional eslint cache
+.eslintcache
+
+build
+
+src/utils/*.out
+src/utils/*.in
+

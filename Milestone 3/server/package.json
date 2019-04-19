@@ -1,0 +1,22 @@
+{
+  "name": "nchancellors",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "esevangelista <esevangelista1@up.edu.ph>",
+  "license": "MIT",
+  "engines": {
+    "node": "11.12.0"
+  },
+  "scripts": {
+    "start": "node src/"
+  },
+  "dependencies": {
+    "backpack-core": "^0.5.0",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.11",
+    "path": "^0.12.7"
+  }
+}

@@ -1,0 +1,20 @@
+@import 'src/styles/fonts.scss';
+@import 'src/styles/colors.scss';
+@import 'src/styles/devices.scss';
+
+.solver-container {
+
+  min-height: 360px;
+  .solver-content {
+    margin: 48px 48px;
+
+    h3 {
+      text-align: center;
+      font-weight: 600;
+      font-size: 48px;
+    }
+    .form-container {
+      text-align: center;
+    }  
+  }
+}

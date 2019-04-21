@@ -1,0 +1,38 @@
+@import 'src/styles/fonts.scss';
+@import 'src/styles/colors.scss';
+@import 'src/styles/devices.scss';
+
+
+.solver-content {
+  text-align: center;
+  // padding: 48px 48px;
+  .main-table {
+    tr, td {
+      border-bottom: none;
+    }
+
+    tr:hover:not(.ant-table-expanded-row) {
+      td {
+        background: transparent;
+      }
+    }
+    .ant-table-pagination.ant-pagination {
+      float: none;
+    }
+    .solns {
+      width: auto;
+      td {
+
+        width: 60px;
+        height: 60px;
+        border:  3px solid  $dead-grey;
+        background: transparent;
+        color: $black;
+        text-align: center;
+        font-family: 'Sailec-Bold';
+        font-weight: 900;
+        font-size: 24px;
+      }
+    }
+  }
+}

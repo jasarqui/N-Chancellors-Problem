@@ -1,0 +1,137 @@
+@import 'src/styles/fonts.scss';
+@import 'src/styles/colors.scss';
+@import 'src/styles/devices.scss';
+
+/* TODO 
+  responsive btn size
+*/
+
+.hero-container {
+  background-color: $very-dark-blue;
+  background-repeat: space;
+  background-size:  cover; 
+  background-position: center center;
+  background-blend-mode: color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .hero-content {
+    text-align: center;
+    h1 {
+      color: $white;
+      font-family: 'Good-brush';
+      font-weight: 900;
+      letter-spacing: 5px;
+      margin-bottom: 0;
+    }
+    h3, p {
+      font-family: 'Cyber-Brush';
+      color: $grayish-orange;
+    }
+    img {
+      height: 100px;
+      margin-bottom: 20px;
+    }
+    #down-btn {
+      background: rgba(255, 255, 255, 0.1);
+      font-family: 'Cyber-Brush';
+      font-size: 25px;
+      color: $grayingsh-orange;
+      border-color: #grayish-orange;
+      margin-right: 10px;
+      margin-left: 10px;
+      &:hover {
+        background: $pure-yellow;
+        border-color: $pure-yellow;
+        color: $white;
+      }
+    }
+  }
+}
+
+@include for-phone-only {
+  .hero-container {
+    height: 360px;
+    .hero-content {
+      h1 {
+        font-size: 20px;
+      }
+      p {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+
+@include for-tablet-portrait-down {
+  .hero-container {
+    height: 480px;
+    .hero-content {
+      h1 {
+      font-size: 24px;
+      }
+      p {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@include for-tablet-portrait-up {
+  .hero-container {
+    height: 480px;
+    .hero-content {
+      h1 {
+        font-size: 36px;
+      }
+      p {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@include for-tablet-landscape-up {
+  .hero-container {
+    height: 600px;
+    .hero-content {
+      h1 {
+        font-size: 48px;
+      }
+      p {
+        font-size: 18px;
+      }
+    }
+  }
+}
+
+@include for-desktop-up {
+  .hero-container {
+    height: 720px;
+    .hero-content {
+      h1 {
+        font-size: 64px;
+      }
+      p {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+
+@include for-big-desktop-up {
+  .hero-container {
+    height: 840px;
+    .hero-content {
+      h1 {
+        font-size: 72px;
+      }
+      p {
+        font-size: 28px;
+      }
+    }
+  }
+}
+

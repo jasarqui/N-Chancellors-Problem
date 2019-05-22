@@ -1,0 +1,34 @@
+{
+  "name": "nchancellors",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "antd": "^3.16.3",
+    "axios": "^0.18.0",
+    "immutability-helper": "^3.0.0",
+    "node-sass": "^4.11.0",
+    "npm-run-all": "^4.1.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "2.1.8",
+    "sass-loader": "^7.1.0"
+  },
+  "scripts": {
+    "build-css": "node-sass src/ -o src/",
+    "start-js": "react-scripts start",
+    "watch-css": "npm run build-css && node-sass src/ -o src/ --watch --recursive",
+    "start": "npm-run-all --parallel watch-css start-js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
